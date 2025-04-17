@@ -27,8 +27,9 @@ source venv/bin/activate
 pip install -r requirements.txt
 ```
 
-
 ## Usage
+
+_For Linux environments (including WSL). For usage in Windows, please refer to additional steps below._
 
 Run the script with the directory to monitor and the remote location:
 
@@ -40,6 +41,21 @@ python rsync_watcher.py [directory_path] --remote user@host:/path/to/destination
 
 - `directory_path`: Path to the directory to monitor (optional, defaults to current directory)
 - `--remote` or `-r`: Remote location in the format `user@host:/path/to/destination` (required)
+
+## Additional Steps for Windows
+
+Since rsync doesn't natively ship with Windows, we'll have to install it manually. We'll use Cygwin for this.
+
+1. Download and install [Cygwin](https://www.cygwin.com/). Make sure to tick rsync and ssh while installing.
+2. Add Cygwin to path. (C:\cygwin64\bin)
+3. Run the script
+
+```
+python rsync_watcher.py [directory_path] --remote user@host:/path/to/destination -e [cygwin_ssh_path]
+```
+
+`cygwin_ssh_path`: `C:\cygwin64\bin\ssh.exe`
+`directory_path`: Should be an absolute path starting from drive prefix. Example `C:\source_directory\` and should contain no spaces in between.
 
 ## Notes
 

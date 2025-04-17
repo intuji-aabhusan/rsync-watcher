@@ -1,5 +1,5 @@
 import time
-import sys
+import os
 import argparse
 import subprocess
 import os
@@ -7,9 +7,10 @@ from watchdog.events import FileSystemEvent, FileSystemEventHandler
 from watchdog.observers import Observer
 
 class MyEventHandler(FileSystemEventHandler):
-    def __init__(self, source_directory, remote_location):
+    def __init__(self, source_directory, remote_location, ssh_binary):
         self.source_directory = source_directory
         self.remote_location = remote_location
+        self.ssh_binary = ssh_binary
         self.last_synced_time = time.time()
         self.min_sync_interval = 2  # seconds, for debounce
         
@@ -20,19 +21,20 @@ class MyEventHandler(FileSystemEventHandler):
             return
             
         self.last_synced_time = current_time
-        
         try:
             print(f"Change detected: {event.src_path}")
             print(f"Syncing {self.source_directory} to {self.remote_location}...")
-            
-           
+
             rsync_cmd = [
                 "rsync",
                 "-avz",  # archive mode, verbose, compress
                 "--delete", 
-                f"{self.source_directory}",
+                f"/cygdrive/{self.source_directory}" if self.ssh_binary != None else self.source_directory,  # source directory
                 self.remote_location 
             ]
+
+            if self.ssh_binary is not None:
+                rsync_cmd.insert(2, f"-e {self.ssh_binary}")
             
             result = subprocess.run(rsync_cmd, capture_output=True, text=True)
             
@@ -50,15 +52,22 @@ def main():
                         help='Path to the directory to monitor (default: current directory)')
     parser.add_argument('--remote', '-r', type=str, required=True,
                         help='Remote location in the format user@host:/path/to/destination')
+    
+    parser.add_argument('-e', type=str,
+                        help='Location of ssh binary. This is required for rsync to work with Cygwin installations.')
+    
     args = parser.parse_args()
     
     directory_path = args.path
     remote_location = args.remote
+    ssh_binary = args.e
+    if ssh_binary:
+        os.environ['RSYNC_SSH'] = ssh_binary
     
     print(f"Monitoring directory: {directory_path}")
     print(f"Remote destination: {remote_location}")
     
-    event_handler = MyEventHandler(directory_path, remote_location)
+    event_handler = MyEventHandler(directory_path, remote_location, ssh_binary)
     observer = Observer()
     observer.schedule(event_handler, directory_path, recursive=True)
     observer.start()
