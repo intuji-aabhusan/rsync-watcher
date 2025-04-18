@@ -40,7 +40,7 @@ python rsync_watcher.py [directory_path] --remote user@host:/path/to/destination
 - `directory_path`: Path to the directory to monitor (optional, defaults to current directory)
 - `--remote` or `-r`: Remote location in the format `user@host:/path/to/destination` (required)
 
-## Create Alias
+### Create Alias
 
 You can also create an alias to run the application easily. Update your `.bashrc` or equivalent file and add the following line:
 
