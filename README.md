@@ -35,10 +35,17 @@ Run the script with the directory to monitor and the remote location:
 python rsync_watcher.py [directory_path] --remote user@host:/path/to/destination
 ```
 
+With additional rsync args
+
+```bash
+python rsync_watcher.py [directory_path] --remote user@host:/path/to/destination --rsync-args --exclude="*.pem"
+```
+
 ### Arguments
 
 - `directory_path`: Path to the directory to monitor (optional, defaults to current directory)
 - `--remote` or `-r`: Remote location in the format `user@host:/path/to/destination` (required)
+- `--rsync-args` or `-a`: Additional arguments to pass directly to rsync (optional)
 
 ### Create Alias
 
