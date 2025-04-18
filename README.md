@@ -27,7 +27,6 @@ source venv/bin/activate
 pip install -r requirements.txt
 ```
 
-
 ## Usage
 
 Run the script with the directory to monitor and the remote location:
@@ -40,6 +39,26 @@ python rsync_watcher.py [directory_path] --remote user@host:/path/to/destination
 
 - `directory_path`: Path to the directory to monitor (optional, defaults to current directory)
 - `--remote` or `-r`: Remote location in the format `user@host:/path/to/destination` (required)
+
+## Create Alias
+
+You can also create an alias to run the application easily. Update your `.bashrc` or equivalent file and add the following line:
+
+```
+alias rsync_watcher='/path/to/your/directory/run_rsync_watcher.sh'
+```
+
+Make sure that the `run_rsync_watcher.sh` is executable.
+
+```bash
+chmod +x run_rsync_watcher.sh
+```
+
+Then, you can simply run:
+
+```bash
+rsync_watcher [directory_path] --remote user@host:/path/to/destination
+```
 
 ## Notes
 
